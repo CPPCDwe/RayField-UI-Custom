@@ -496,11 +496,11 @@ local neon = (function() -- Open sourced neon module
 end)()
 
 local Glass = {
-	Main = 0.35,
-	Topbar = 0.28,
-	Element = 0.42,
-	TabSelected = 0.32,
-	TabInactive = 0.58,
+	Main = 0.18,
+	Topbar = 0.14,
+	Element = 0.24,
+	TabSelected = 0.2,
+	TabInactive = 0.34,
 }
 
 local GlassBlur = nil
@@ -544,7 +544,7 @@ local function BindGlass(frame)
 	local blur = EnsureBlurModule(frame)
 	if not neon:HasBinding(blur) then
 		neon:BindFrame(blur, {
-			Transparency = 0.98,
+			Transparency = 0.995,
 			BrickColor = BrickColor.new("Institutional white"),
 		})
 		table.insert(GlassFrames, blur)
@@ -835,7 +835,7 @@ function Unhide()
 	end
 	for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 		if TopbarButton.ClassName == "ImageButton" then
-			TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
+			TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.2}):Play()
 		end
 	end
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
@@ -2550,8 +2550,47 @@ function RayfieldLibrary:CreateWindow(Settings)
 	wait(0.1)
 	TweenService:Create(Topbar.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 	wait(0.1)
-	TweenTopbarButtonTransparency(0.8, TweenInfo.new(0.7, Enum.EasingStyle.Quint))
+	TweenTopbarButtonTransparency(0.2, TweenInfo.new(0.7, Enum.EasingStyle.Quint))
 	wait(0.3)
+
+	local SearchFrame = Child(TabList, "Search") or TabList:FindFirstChild("Search", true)
+	if SearchFrame and SearchFrame:IsA("Frame") then
+		SearchFrame.Visible = false
+		ApplyGlass(SearchFrame, Glass.Element)
+		local SearchInput = SearchFrame:FindFirstChild("Input", true)
+		if SearchInput and SearchInput:IsA("TextBox") then
+			SearchInput.ClearTextOnFocus = false
+			local function FilterTabs(q)
+				local query = string.lower(tostring(q or ""))
+				for _, tabbtn in ipairs(TabList:GetChildren()) do
+					if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Template" and tabbtn.Name ~= "Placeholder" then
+						local titleObj = tabbtn:FindFirstChild("Title")
+						if titleObj and titleObj:IsA("TextLabel") then
+							local titleText = titleObj.Text
+							local show = query == "" or string.find(string.lower(tostring(titleText)), query, 1, true) ~= nil
+							tabbtn.Visible = show
+						end
+					end
+				end
+			end
+
+			SearchInput:GetPropertyChangedSignal("Text"):Connect(function()
+				FilterTabs(SearchInput.Text)
+			end)
+		end
+		local SearchBtn = Child(Topbar, "Search") or Topbar:FindFirstChild("Search", true)
+		if SearchBtn and SearchBtn:IsA("ImageButton") then
+			SearchBtn.MouseButton1Click:Connect(function()
+				SearchFrame.Visible = not SearchFrame.Visible
+				if SearchFrame.Visible and SearchInput and SearchInput:IsA("TextBox") then
+					pcall(function()
+						SearchInput:CaptureFocus()
+					end)
+					FilterTabs(SearchInput.Text)
+				end
+			end)
+		end
+	end
 
 	return Window
 end
@@ -2616,11 +2655,11 @@ for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 		end)
 
 		TopbarButton.MouseLeave:Connect(function()
-			TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
+		TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.2}):Play()
 		end)
 
 		TopbarButton.MouseButton1Click:Connect(function()
-			TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
+		TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.2}):Play()
 		end)
 	end
 end
