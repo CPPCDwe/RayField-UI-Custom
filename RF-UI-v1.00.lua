@@ -576,6 +576,25 @@ local function CleanupGlass()
 	end
 end
 
+local function Child(parent, name)
+	if not parent then return nil end
+	return parent:FindFirstChild(name)
+end
+
+local function SafeTween(obj, info, props)
+	if obj then
+		TweenService:Create(obj, info, props):Play()
+	end
+end
+
+local function SafeProp(obj, prop, value)
+	if obj then
+		pcall(function()
+			obj[prop] = value
+		end)
+	end
+end
+
 function RayfieldLibrary:Notify(NotificationSettings)
 	spawn(function()
 		local ActionCompleted = true
@@ -739,11 +758,11 @@ function Hide()
 	end
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
-			TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-			TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-			TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-			TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-			TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+			SafeTween(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1})
+			SafeTween(Child(tabbtn, "Title"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1})
+			SafeTween(Child(tabbtn, "Image"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1})
+			SafeTween(Child(tabbtn, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1})
+			SafeTween(Child(tabbtn, "UIStroke"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1})
 		end
 	end
 	for _, tab in ipairs(Elements:GetChildren()) do
@@ -796,17 +815,17 @@ function Unhide()
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
 			if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected}):Play()
-				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-				TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9}):Play()
-				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
-				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+				SafeTween(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected})
+				SafeTween(Child(tabbtn, "Title"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0})
+				SafeTween(Child(tabbtn, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9})
+				SafeTween(Child(tabbtn, "Image"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0})
+				SafeTween(Child(tabbtn, "UIStroke"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1})
 			else
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive}):Play()
-				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.2}):Play()
-				TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7}):Play()
-				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
-				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
+				SafeTween(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive})
+				SafeTween(Child(tabbtn, "Image"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.2})
+				SafeTween(Child(tabbtn, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7})
+				SafeTween(Child(tabbtn, "Title"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0.2})
+				SafeTween(Child(tabbtn, "UIStroke"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 0})
 			end
 
 		end
@@ -883,17 +902,17 @@ function Maximise()
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
 			if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected}):Play()
-				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
-				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-				TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9}):Play()
+				SafeTween(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected})
+				SafeTween(Child(tabbtn, "Image"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0})
+				SafeTween(Child(tabbtn, "Title"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0})
+				SafeTween(Child(tabbtn, "UIStroke"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1})
+				SafeTween(Child(tabbtn, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9})
 			else
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive}):Play()
-				TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7}):Play()
-				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.2}):Play()
-				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
-				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
+				SafeTween(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive})
+				SafeTween(Child(tabbtn, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7})
+				SafeTween(Child(tabbtn, "Image"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.2})
+				SafeTween(Child(tabbtn, "Title"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0.2})
+				SafeTween(Child(tabbtn, "UIStroke"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 0})
 			end
 
 		end
@@ -910,11 +929,11 @@ function Minimise()
 
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
-			TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-			TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-			TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-			TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-			TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+			SafeTween(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1})
+			SafeTween(Child(tabbtn, "Image"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1})
+			SafeTween(Child(tabbtn, "Title"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1})
+			SafeTween(Child(tabbtn, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1})
+			SafeTween(Child(tabbtn, "UIStroke"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1})
 		end
 	end
 
@@ -1009,10 +1028,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 	for _, TabButton in ipairs(TabList:GetChildren()) do
 		if TabButton.ClassName == "Frame" and TabButton.Name ~= "Placeholder" then
 			TabButton.BackgroundTransparency = 1
-			TabButton.Title.TextTransparency = 1
-			TabButton.Shadow.ImageTransparency = 1
-			TabButton.Image.ImageTransparency = 1
-			TabButton.UIStroke.Transparency = 1
+			SafeProp(Child(TabButton, "Title"), "TextTransparency", 1)
+			SafeProp(Child(TabButton, "Shadow"), "ImageTransparency", 1)
+			SafeProp(Child(TabButton, "Image"), "ImageTransparency", 1)
+			SafeProp(Child(TabButton, "UIStroke"), "Transparency", 1)
 		end
 	end
 
@@ -1276,14 +1295,13 @@ function RayfieldLibrary:CreateWindow(Settings)
 		end
 
 		TabButton.BackgroundTransparency = 1
-		TabButton.Title.TextTransparency = 1
-		TabButton.Shadow.ImageTransparency = 1
-		TabButton.Image.ImageTransparency = 1
-		TabButton.UIStroke.Transparency = 1
+		SafeProp(Child(TabButton, "Title"), "TextTransparency", 1)
+		SafeProp(Child(TabButton, "Shadow"), "ImageTransparency", 1)
+		SafeProp(Child(TabButton, "Image"), "ImageTransparency", 1)
+		SafeProp(Child(TabButton, "UIStroke"), "Transparency", 1)
 
 		TabButton.Visible = true
 
-		-- Create Elements Page
 		local TabPage = Elements.Template:Clone()
 		TabPage.Name = Name
 		TabPage.Visible = true
@@ -1307,54 +1325,52 @@ function RayfieldLibrary:CreateWindow(Settings)
 		end
 
 		if SelectedTheme ~= RayfieldLibrary.Theme.Default then
-			TabButton.Shadow.Visible = false
+			SafeProp(Child(TabButton, "Shadow"), "Visible", false)
 		end
-		TabButton.UIStroke.Color = SelectedTheme.TabStroke
-		-- Animate
+		SafeProp(Child(TabButton, "UIStroke"), "Color", SelectedTheme.TabStroke)
 		wait(0.1)
 		if FirstTab then
 			TabButton.BackgroundColor3 = SelectedTheme.TabBackground
-			TabButton.Image.ImageColor3 = SelectedTheme.TabTextColor
-			TabButton.Title.TextColor3 = SelectedTheme.TabTextColor
-			TweenService:Create(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive}):Play()
-			TweenService:Create(TabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
-			TweenService:Create(TabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.2}):Play()
-			TweenService:Create(TabButton.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-
-			TweenService:Create(TabButton.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7}):Play()
+			SafeProp(Child(TabButton, "Image"), "ImageColor3", SelectedTheme.TabTextColor)
+			SafeProp(Child(TabButton, "Title"), "TextColor3", SelectedTheme.TabTextColor)
+			SafeTween(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive})
+			SafeTween(Child(TabButton, "Title"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0.2})
+			SafeTween(Child(TabButton, "Image"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.2})
+			SafeTween(Child(TabButton, "UIStroke"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0})
+			SafeTween(Child(TabButton, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7})
 		else
 			FirstTab = Name
 			TabButton.BackgroundColor3 = SelectedTheme.TabBackgroundSelected
-			TabButton.Image.ImageColor3 = SelectedTheme.SelectedTabTextColor
-			TabButton.Title.TextColor3 = SelectedTheme.SelectedTabTextColor
-			TweenService:Create(TabButton.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9}):Play()
-			TweenService:Create(TabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
-			TweenService:Create(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected}):Play()
-			TweenService:Create(TabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
+			SafeProp(Child(TabButton, "Image"), "ImageColor3", SelectedTheme.SelectedTabTextColor)
+			SafeProp(Child(TabButton, "Title"), "TextColor3", SelectedTheme.SelectedTabTextColor)
+			SafeTween(Child(TabButton, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9})
+			SafeTween(Child(TabButton, "Image"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0})
+			SafeTween(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected})
+			SafeTween(Child(TabButton, "Title"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0})
 		end
 
 
 		TabButton.Interact.MouseButton1Click:Connect(function()
 			if Minimised then return end
-			TweenService:Create(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected}):Play()
-			TweenService:Create(TabButton.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-			TweenService:Create(TabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-			TweenService:Create(TabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
-			TweenService:Create(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.TabBackgroundSelected}):Play()
-			TweenService:Create(TabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextColor3 = SelectedTheme.SelectedTabTextColor}):Play()
-			TweenService:Create(TabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageColor3 = SelectedTheme.SelectedTabTextColor}):Play()
-			TweenService:Create(TabButton.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9}):Play()
+			SafeTween(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabSelected})
+			SafeTween(Child(TabButton, "UIStroke"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 1})
+			SafeTween(Child(TabButton, "Title"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0})
+			SafeTween(Child(TabButton, "Image"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0})
+			SafeTween(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.TabBackgroundSelected})
+			SafeTween(Child(TabButton, "Title"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextColor3 = SelectedTheme.SelectedTabTextColor})
+			SafeTween(Child(TabButton, "Image"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageColor3 = SelectedTheme.SelectedTabTextColor})
+			SafeTween(Child(TabButton, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.9})
 
 			for _, OtherTabButton in ipairs(TabList:GetChildren()) do
 				if OtherTabButton.Name ~= "Template" and OtherTabButton.ClassName == "Frame" and OtherTabButton ~= TabButton and OtherTabButton.Name ~= "Placeholder" then
-					TweenService:Create(OtherTabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.TabBackground}):Play()
-					TweenService:Create(OtherTabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextColor3 = SelectedTheme.TabTextColor}):Play()
-					TweenService:Create(OtherTabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageColor3 = SelectedTheme.TabTextColor}):Play()
-					TweenService:Create(OtherTabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive}):Play()
-					TweenService:Create(OtherTabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
-					TweenService:Create(OtherTabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.2}):Play()
-					TweenService:Create(OtherTabButton.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7}):Play()
-					TweenService:Create(OtherTabButton.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
+					SafeTween(OtherTabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.TabBackground})
+					SafeTween(Child(OtherTabButton, "Title"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextColor3 = SelectedTheme.TabTextColor})
+					SafeTween(Child(OtherTabButton, "Image"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageColor3 = SelectedTheme.TabTextColor})
+					SafeTween(OtherTabButton, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = Glass.TabInactive})
+					SafeTween(Child(OtherTabButton, "Title"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0.2})
+					SafeTween(Child(OtherTabButton, "Image"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.2})
+					SafeTween(Child(OtherTabButton, "Shadow"), TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 0.7})
+					SafeTween(Child(OtherTabButton, "UIStroke"), TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0})
 				end
 			end
 			if Elements.UIPageLayout.CurrentPage ~= TabPage then
