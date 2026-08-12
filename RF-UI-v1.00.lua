@@ -191,7 +191,12 @@ function ChangeTheme(ThemeName)
 
 	Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
 	Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
-	Rayfield.Main.Topbar.Theme.ImageColor3 = SelectedTheme.TextColor
+	do
+		local ThemeObj = Rayfield.Main.Topbar:FindFirstChild("Theme")
+		if ThemeObj then
+			ThemeObj.ImageColor3 = SelectedTheme.TextColor
+		end
+	end
 
 	for _, TabPage in ipairs(Elements:GetChildren()) do
 		if TabPage.ClassName == "ScrollingFrame" and TabPage.Name ~= "Template" then
@@ -2513,7 +2518,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Topbar.Divider.Size = UDim2.new(0, 0, 0, 1)
 	Topbar.CornerRepair.BackgroundTransparency = 1
 	Topbar.Title.TextTransparency = 1
-	Topbar.Theme.ImageTransparency = 1
+	local ThemeObj = Topbar:FindFirstChild("Theme")
+	if ThemeObj then
+		ThemeObj.ImageTransparency = 1
+	end
 	Topbar.ChangeSize.ImageTransparency = 1
 	Topbar.Hide.ImageTransparency = 1
 
@@ -2526,7 +2534,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 	wait(0.1)
 	TweenService:Create(Topbar.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 	wait(0.1)
-	TweenService:Create(Topbar.Theme, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
+	local ThemeObj2 = Topbar:FindFirstChild("Theme")
+	if ThemeObj2 then
+		TweenService:Create(ThemeObj2, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
+	end
 	wait(0.1)
 	TweenService:Create(Topbar.ChangeSize, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
 	wait(0.1)
@@ -2608,7 +2619,11 @@ end
 
 task.delay(3.5, RayfieldLibrary.LoadConfiguration, RayfieldLibrary)
 if Rayfield:FindFirstChild("Notice") then
-	Rayfield.Notice.Visible = true
+	if Rayfield.Name ~= "Rayfield" then
+		Rayfield.Notice.Visible = true
+	else
+		Rayfield.Notice.Visible = false
+	end
 	Rayfield.Notice.Interact.MouseButton1Click:Connect(function()
 		Rayfield.Notice.Visible = false
 	end)
