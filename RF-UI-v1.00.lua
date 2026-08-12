@@ -187,7 +187,7 @@ function ChangeTheme(ThemeName)
 	ApplyGlass(Rayfield.Main, Glass.Main)
 	ApplyGlass(Rayfield.Main.Topbar, Glass.Topbar)
 	ApplyGlass(Rayfield.Main.Topbar.CornerRepair, Glass.Topbar)
-	ApplyGlass(Elements, Glass.Main)
+	ApplyTransparencyOnly(Elements, Glass.Main)
 
 	SetTopbarButtonColors(SelectedTheme.TextColor)
 
@@ -543,9 +543,17 @@ local function BindGlass(frame)
 	if not CanUseGlass() or Rayfield.Name ~= "Rayfield" then return end
 	local blur = EnsureBlurModule(frame)
 	if not neon:HasBinding(blur) then
+		local function GetBrickColor()
+			local c = SelectedTheme and SelectedTheme.Background or Color3.fromRGB(25, 25, 25)
+			local lum = (c.R * 0.2126 + c.G * 0.7152 + c.B * 0.0722)
+			if lum > 0.5 then
+				return BrickColor.new("Institutional white")
+			end
+			return BrickColor.new("Really black")
+		end
 		neon:BindFrame(blur, {
-			Transparency = 0.995,
-			BrickColor = BrickColor.new("Institutional white"),
+			Transparency = 0.999,
+			BrickColor = GetBrickColor(),
 		})
 		table.insert(GlassFrames, blur)
 	end
@@ -558,6 +566,15 @@ local function ApplyGlass(frame, transparency)
 			frame.BackgroundTransparency = transparency
 		end
 		BindGlass(frame)
+	end
+end
+
+local function ApplyTransparencyOnly(frame, transparency)
+	if not frame then return end
+	if frame:IsA("Frame") or frame:IsA("ScrollingFrame") then
+		if transparency then
+			frame.BackgroundTransparency = transparency
+		end
 	end
 end
 
@@ -1049,7 +1066,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 	BindGlass(Main)
 	BindGlass(Topbar)
 	BindGlass(Topbar.CornerRepair)
-	BindGlass(Elements)
+	ApplyTransparencyOnly(Elements, Glass.Main)
 
 	for _, TabButton in ipairs(TabList:GetChildren()) do
 		if TabButton.ClassName == "Frame" and TabButton.Name ~= "Placeholder" then
