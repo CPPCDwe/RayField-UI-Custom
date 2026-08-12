@@ -189,14 +189,7 @@ function ChangeTheme(ThemeName)
 	ApplyGlass(Rayfield.Main.Topbar.CornerRepair, Glass.Topbar)
 	ApplyGlass(Elements, Glass.Main)
 
-	Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
-	Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
-	do
-		local ThemeObj = Rayfield.Main.Topbar:FindFirstChild("Theme")
-		if ThemeObj then
-			ThemeObj.ImageColor3 = SelectedTheme.TextColor
-		end
-	end
+	SetTopbarButtonColors(SelectedTheme.TextColor)
 
 	for _, TabPage in ipairs(Elements:GetChildren()) do
 		if TabPage.ClassName == "ScrollingFrame" and TabPage.Name ~= "Template" then
@@ -597,6 +590,34 @@ local function SafeProp(obj, prop, value)
 		pcall(function()
 			obj[prop] = value
 		end)
+	end
+end
+
+local function GetThemeButton()
+	return Topbar:FindFirstChild("Theme") or Topbar:FindFirstChild("Settings")
+end
+
+local function SetTopbarButtonColors(color)
+	for _, obj in ipairs(Topbar:GetChildren()) do
+		if obj:IsA("ImageButton") then
+			SafeProp(obj, "ImageColor3", color)
+		end
+	end
+end
+
+local function SetTopbarButtonTransparency(value)
+	for _, obj in ipairs(Topbar:GetChildren()) do
+		if obj:IsA("ImageButton") then
+			SafeProp(obj, "ImageTransparency", value)
+		end
+	end
+end
+
+local function TweenTopbarButtonTransparency(value, tweenInfo)
+	for _, obj in ipairs(Topbar:GetChildren()) do
+		if obj:IsA("ImageButton") then
+			SafeTween(obj, tweenInfo, {ImageTransparency = value})
+		end
 	end
 end
 
@@ -2518,12 +2539,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Topbar.Divider.Size = UDim2.new(0, 0, 0, 1)
 	Topbar.CornerRepair.BackgroundTransparency = 1
 	Topbar.Title.TextTransparency = 1
-	local ThemeObj = Topbar:FindFirstChild("Theme")
-	if ThemeObj then
-		ThemeObj.ImageTransparency = 1
-	end
-	Topbar.ChangeSize.ImageTransparency = 1
-	Topbar.Hide.ImageTransparency = 1
+	SetTopbarButtonTransparency(1)
 
 	wait(0.5)
 	Topbar.Visible = true
@@ -2534,14 +2550,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 	wait(0.1)
 	TweenService:Create(Topbar.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 	wait(0.1)
-	local ThemeObj2 = Topbar:FindFirstChild("Theme")
-	if ThemeObj2 then
-		TweenService:Create(ThemeObj2, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
-	end
-	wait(0.1)
-	TweenService:Create(Topbar.ChangeSize, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
-	wait(0.1)
-	TweenService:Create(Topbar.Hide, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
+	TweenTopbarButtonTransparency(0.8, TweenInfo.new(0.7, Enum.EasingStyle.Quint))
 	wait(0.3)
 
 	return Window
@@ -2575,6 +2584,17 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 		Hide()
 	end
 end)
+
+local ThemeButton = GetThemeButton()
+if ThemeButton then
+	ThemeButton.MouseButton1Click:Connect(function()
+		if SelectedTheme == RayfieldLibrary.Theme.Default then
+			ChangeTheme("Light")
+		else
+			ChangeTheme("Default")
+		end
+	end)
+end
 
 UserInputService.InputBegan:Connect(function(input, processed)
 	if (input.KeyCode == Enum.KeyCode.K and not processed) then
